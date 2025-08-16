@@ -61,8 +61,22 @@ class LedgerController {
      * @param createAccountRequest the creation account request
      * @return response entity
      */
+    @Operation(
+        summary = "Create Account",
+        description = "Creates a new account with an initial balance and idempotency support"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Account created successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Account.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid request parameters"),
+        @ApiResponse(responseCode = "409", description = "Account already exists (idempotency)")
+    })
     @PostMapping("/accounts")
-    public ResponseEntity<Account> createAccount(@RequestHeader("Idempotency-Key") String idempotencyKey, @RequestBody CreateAccountRequest createAccountRequest) {
+    public ResponseEntity<Account> createAccount(
+            @Parameter(description = "Unique key to ensure idempotent operations", required = true)
+            @RequestHeader("Idempotency-Key") String idempotencyKey, 
+            @Parameter(description = "Account creation request", required = true)
+            @RequestBody CreateAccountRequest createAccountRequest) {
         return ResponseEntity.ok(ledgerService.createAccount(idempotencyKey, createAccountRequest));
     }
 
@@ -72,7 +86,7 @@ class LedgerController {
      * @param ledgerEntryRequest the ledger entry request
      * @return the response entity
      */
-    @PostMapping("/add-transaction)")
+    @PostMapping("/add-transaction")
     public ResponseEntity<String> addTransaction(@RequestBody LedgerEntryRequest ledgerEntryRequest){
         transferService.addTransaction(ledgerEntryRequest);
         return ResponseEntity.ok("Transaction created/added");
@@ -83,6 +97,14 @@ class LedgerController {
      *
      * @return all accounts
      */
+    @Operation(
+        summary = "Get All Accounts",
+        description = "Retrieves a list of all accounts in the system"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Accounts retrieved successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Account.class)))
+    })
     @GetMapping("/accounts")
     public ResponseEntity<List<Account>> getAllAccounts() {
         return ResponseEntity.ok(ledgerService.getAllAccounts());

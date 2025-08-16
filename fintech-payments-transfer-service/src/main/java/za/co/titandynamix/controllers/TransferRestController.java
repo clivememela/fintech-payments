@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.co.titandynamix.dto.TransferRequest;
@@ -115,14 +114,10 @@ class TransferRestController {
                     """)))
     })
     @PostMapping("/transfers")
-    public ResponseEntity<TransferResponse> createTransfer(
-            @Parameter(description = "Unique key to ensure idempotent operations", required = true, 
-                example = "transfer-2024-001-abc123")
-            @RequestHeader("Idempotency-Key") String idempotencyKey,
-            
-            @Parameter(description = "Transfer request details", required = true)
-            @Valid @RequestBody TransferRequest request
-    ) {
+    public ResponseEntity<TransferResponse> createTransfer(@Parameter(description = "Unique key to ensure idempotent operations", required = true, example = "transfer-2024-001-abc123")
+                                                               @RequestHeader("Idempotency-Key") String idempotencyKey,
+                                                           @Parameter(description = "Transfer request details", required = true)
+                                                           @Valid @RequestBody TransferRequest request) {
         System.out.println("=== DEBUG: TransferRestController.createTransfer() ENTRY POINT ===");
         System.out.println("DEBUG: Method called at: " + java.time.LocalDateTime.now());
         System.out.println("DEBUG: Idempotency-Key: " + idempotencyKey);
@@ -131,7 +126,7 @@ class TransferRestController {
         
         Transfer transfer = transferService.getTransferStatus(request, idempotencyKey);
         TransferResponse body = new TransferResponse(transfer.getId(), transfer.getStatus(), transfer.getFailureReason());
-        
+
         System.out.println("DEBUG: Transfer result: " + transfer);
         System.out.println("=== DEBUG: TransferRestController.createTransfer() EXIT ===");
         
@@ -177,10 +172,8 @@ class TransferRestController {
                     """)))
     })
     @GetMapping("/transfers/{id}")
-    public ResponseEntity<TransferResponse> getTransferStatus(
-            @Parameter(description = "Transfer ID", required = true, 
-                example = "123e4567-e89b-12d3-a456-426614174000")
-            @PathVariable UUID id) {
+    public ResponseEntity<TransferResponse> getTransferStatus(@Parameter(description = "Transfer ID", required = true, example = "123e4567-e89b-12d3-a456-426614174000")
+                                                                  @PathVariable UUID id) {
         try {
             Transfer transfer = transferService.getTransferStatus(id);
             return ResponseEntity.ok(new TransferResponse(transfer.getId(), transfer.getStatus(), transfer.getFailureReason()));
@@ -246,10 +239,8 @@ class TransferRestController {
                     """)))
     })
     @PostMapping("/transfers/batch")
-    public ResponseEntity<List<TransferResponse>> createTransfersBatch(
-            @Parameter(description = "List of transfer requests to process (max 100)", required = true)
-            @Valid @RequestBody List<TransferRequest> requests
-    ) {
+    public ResponseEntity<List<TransferResponse>> createTransfersBatch(@Parameter(description = "List of transfer requests to process (max 100)", required = true)
+                                                                           @Valid @RequestBody List<TransferRequest> requests) {
         List<Transfer> transfers = transferService.createTransfersBatch(requests);
         List<TransferResponse> body = transfers.stream()
                 .map(t -> new TransferResponse(t.getId(), t.getStatus(), t.getFailureReason()))

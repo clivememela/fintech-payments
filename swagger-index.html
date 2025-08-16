@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fintech Payments - API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #718096;
+            margin-bottom: 30px;
+        }
+        
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .service-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .service-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .service-description {
+            color: #718096;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .service-url {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+        
+        .service-url:hover {
+            background: #5a67d8;
+        }
+        
+        .features {
+            background: #edf2f7;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .features-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            color: #4a5568;
+        }
+        
+        .feature-icon {
+            color: #48bb78;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .quick-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-link {
+            background: #2d3748;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        
+        .quick-link:hover {
+            background: #4a5568;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background: #48bb78;
+            box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .services {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🏦 Fintech Payments</h1>
+            <p class="subtitle">Interactive API Documentation</p>
+        </div>
+        
+        <div class="services">
+            <a href="http://localhost:8080/swagger-ui.html" class="service-card" target="_blank">
+                <div class="service-icon">🚀</div>
+                <h2 class="service-title">
+                    <span class="status-indicator status-online"></span>
+                    Transfer Service
+                </h2>
+                <p class="service-description">
+                    High-performance payment transfers with idempotency, 
+                    batch processing, and circuit breaker patterns.
+                </p>
+                <div class="service-url">localhost:8080/swagger-ui.html</div>
+            </a>
+            
+            <a href="http://localhost:8081/swagger-ui.html" class="service-card" target="_blank">
+                <div class="service-icon">📊</div>
+                <h2 class="service-title">
+                    <span class="status-indicator status-online"></span>
+                    Ledger Service
+                </h2>
+                <p class="service-description">
+                    Atomic double-entry bookkeeping with ACID compliance, 
+                    pessimistic locking, and comprehensive concurrency control.
+                </p>
+                <div class="service-url">localhost:8081/swagger-ui.html</div>
+            </a>
+        </div>
+        
+        <div class="features">
+            <h3 class="features-title">🎯 Key Features</h3>
+            <div class="features-grid">
+                <div class="feature">
+                    <span class="feature-icon">✅</span>
+                    Interactive API Testing
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✅</span>
+                    Comprehensive Documentation
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✅</span>
+                    Request/Response Examples
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✅</span>
+                    Schema Validation
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✅</span>
+                    Idempotency Support
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✅</span>
+                    Error Code Documentation
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-links">
+            <a href="http://localhost:8080/v3/api-docs" class="quick-link" target="_blank">
+                📄 Transfer OpenAPI JSON
+            </a>
+            <a href="http://localhost:8081/v3/api-docs" class="quick-link" target="_blank">
+                📄 Ledger OpenAPI JSON
+            </a>
+            <a href="./SWAGGER_DOCUMENTATION.md" class="quick-link" target="_blank">
+                📚 Documentation Guide
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Check service availability and update status indicators
+        async function checkServiceStatus() {
+            const services = [
+                { url: 'http://localhost:8080/actuator/health', indicator: document.querySelectorAll('.status-indicator')[0] },
+                { url: 'http://localhost:8081/actuator/health', indicator: document.querySelectorAll('.status-indicator')[1] }
+            ];
+            
+            for (const service of services) {
+                try {
+                    const response = await fetch(service.url);
+                    if (response.ok) {
+                        service.indicator.className = 'status-indicator status-online';
+                    } else {
+                        service.indicator.className = 'status-indicator';
+                        service.indicator.style.background = '#f56565';
+                    }
+                } catch (error) {
+                    service.indicator.className = 'status-indicator';
+                    service.indicator.style.background = '#f56565';
+                }
+            }
+        }
+        
+        // Check status on page load
+        checkServiceStatus();
+        
+        // Refresh status every 30 seconds
+        setInterval(checkServiceStatus, 30000);
+    </script>
+</body>
+</html>
