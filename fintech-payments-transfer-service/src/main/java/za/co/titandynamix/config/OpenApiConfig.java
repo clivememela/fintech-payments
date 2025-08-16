@@ -20,10 +20,10 @@ import java.util.List;
  * Only enabled in development and test profiles for security
  */
 @Configuration
-@Profile({"!production", "!aws"}) // Exclude from production and AWS profiles
+// @Profile({"!production", "!aws"}) // Temporarily disabled for debugging
 public class OpenApiConfig {
 
-    @Value("${server.port:8080}")
+    @Value("${server.port:8081}")
     private String serverPort;
 
     @Bean

@@ -15,7 +15,7 @@ java {
 
 // Centralized versions for third-party libraries
 ext.versions = [
-        springdocOpenApi: '2.6.0'
+        springdocOpenApi: '2.8.9'
 ]
 ext {
     springBootAdminVersion = "3.5.0"
