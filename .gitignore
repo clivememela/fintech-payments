@@ -151,3 +151,4 @@ test-transfer-debug.sh
 !/.env
 !/.github/
 !/.github/
+!/gradle/
