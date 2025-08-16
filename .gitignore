@@ -157,3 +157,4 @@ test-transfer-debug.sh
 !/gradle/wrapper/gradle-wrapper.properties
 !/gradle/libs.versions.toml
 !/.codebuddy/
+!/docker-compose.yml
