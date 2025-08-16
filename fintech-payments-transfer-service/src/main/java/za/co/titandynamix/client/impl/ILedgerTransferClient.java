@@ -52,12 +52,12 @@ public class ILedgerTransferClient implements LedgerTransferClient {
     @Override
     public Transfer createAndProcessTransfer(TransferRequest request, String idempotencyKey) {
         log.debug("Creating and processing transfer: fromAccount={}, toAccount={}, amount={}, idempotencyKey={}", 
-                request.getFromAccountId(), request.getToAccountId(), request.getAmount(), idempotencyKey);
+                request.fromAccountId(), request.toAccountId(), request.amount(), idempotencyKey);
 
         Map<String, Object> payload = Map.of(
-                "fromAccountId", request.getFromAccountId(),
-                "toAccountId", request.getToAccountId(),
-                "amount", request.getAmount()
+                "fromAccountId", request.fromAccountId(),
+                "toAccountId", request.toAccountId(),
+                "amount", request.amount()
         );
 
         try {
@@ -79,9 +79,9 @@ public class ILedgerTransferClient implements LedgerTransferClient {
 
             return Transfer.builder()
                     .id(response.transferId())
-                    .fromAccountId(request.getFromAccountId())
-                    .toAccountId(request.getToAccountId())
-                    .amount(request.getAmount())
+                    .fromAccountId(request.fromAccountId())
+                    .toAccountId(request.toAccountId())
+                    .amount(request.amount())
                     .status(mapLedgerStatusToTransferStatus(response.status()))
                     .idempotencyKey(idempotencyKey)
                     .failureReason(response.status().equals("FAILED") ? response.message() : null)
@@ -96,9 +96,9 @@ public class ILedgerTransferClient implements LedgerTransferClient {
             
             return Transfer.builder()
                     .id(UUID.randomUUID())
-                    .fromAccountId(request.getFromAccountId())
-                    .toAccountId(request.getToAccountId())
-                    .amount(request.getAmount())
+                    .fromAccountId(request.fromAccountId())
+                    .toAccountId(request.toAccountId())
+                    .amount(request.amount())
                     .status(TransferStatus.FAILED)
                     .idempotencyKey(idempotencyKey)
                     .failureReason("HTTP Error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString())
@@ -109,9 +109,9 @@ public class ILedgerTransferClient implements LedgerTransferClient {
             
             return Transfer.builder()
                     .id(UUID.randomUUID())
-                    .fromAccountId(request.getFromAccountId())
-                    .toAccountId(request.getToAccountId())
-                    .amount(request.getAmount())
+                    .fromAccountId(request.fromAccountId())
+                    .toAccountId(request.toAccountId())
+                    .amount(request.amount())
                     .status(TransferStatus.FAILED)
                     .idempotencyKey(idempotencyKey)
                     .failureReason("System Error: " + e.getMessage())

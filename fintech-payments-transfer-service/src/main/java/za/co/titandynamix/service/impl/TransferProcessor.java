@@ -57,7 +57,7 @@ public class TransferProcessor {
         // Process new transfer via Resilient Ledger Service
         System.out.println("DEBUG: Processing new transfer via ResilientLedgerTransferClient");
         log.debug("Processing new transfer for accounts {} -> {}", 
-                request.getFromAccountId(), request.getToAccountId());
+                request.fromAccountId(), request.toAccountId());
         
         Transfer transfer = resilientLedgerTransferClient.createAndProcessTransfer(request, idempotencyKeyOrNull);
         System.out.println("DEBUG: ResilientLedgerTransferClient result: " + transfer);
@@ -76,13 +76,13 @@ public class TransferProcessor {
         if (req == null) {
             throw new IllegalArgumentException("Transfer request cannot be null");
         }
-        if (req.getFromAccountId() == null || req.getToAccountId() == null) {
+        if (req.fromAccountId() == null || req.toAccountId() == null) {
             throw new IllegalArgumentException("fromAccountId and toAccountId are required");
         }
-        if (req.getFromAccountId().equals(req.getToAccountId())) {
+        if (req.fromAccountId().equals(req.toAccountId())) {
             throw new IllegalArgumentException("fromAccountId and toAccountId must differ");
         }
-        if (req.getAmount() == null || req.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+        if (req.amount() == null || req.amount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("amount must be > 0");
         }
     }

@@ -165,9 +165,9 @@ public class IPaymentTransferService implements PaymentTransferService {
     private String generateBatchIdempotencyKey(int index, TransferRequest request) {
         return String.format("batch_%d_%s_%s_%s", 
                 index, 
-                request.getFromAccountId(), 
-                request.getToAccountId(), 
-                request.getAmount().toString());
+                request.fromAccountId(),
+                request.toAccountId(),
+                request.amount().toString());
     }
 
     /**
