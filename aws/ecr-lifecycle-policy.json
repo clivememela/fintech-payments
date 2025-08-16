@@ -1,0 +1,43 @@
+{
+  "rules": [
+    {
+      "rulePriority": 1,
+      "description": "Keep last 10 production images",
+      "selection": {
+        "tagStatus": "tagged",
+        "tagPrefixList": ["main-", "v"],
+        "countType": "imageCountMoreThan",
+        "countNumber": 10
+      },
+      "action": {
+        "type": "expire"
+      }
+    },
+    {
+      "rulePriority": 2,
+      "description": "Keep last 5 development images",
+      "selection": {
+        "tagStatus": "tagged",
+        "tagPrefixList": ["develop-", "feature-"],
+        "countType": "imageCountMoreThan",
+        "countNumber": 5
+      },
+      "action": {
+        "type": "expire"
+      }
+    },
+    {
+      "rulePriority": 3,
+      "description": "Delete untagged images older than 1 day",
+      "selection": {
+        "tagStatus": "untagged",
+        "countType": "sinceImagePushed",
+        "countUnit": "days",
+        "countNumber": 1
+      },
+      "action": {
+        "type": "expire"
+      }
+    }
+  ]
+}

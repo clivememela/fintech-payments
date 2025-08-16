@@ -1,0 +1,162 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Transfer Service ECS Task Definition and Service'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+  
+  ImageTag:
+    Type: String
+    Default: latest
+    Description: Docker image tag to deploy
+  
+  VPCId:
+    Type: String
+    Description: VPC ID from infrastructure stack
+  
+  PrivateSubnet1:
+    Type: String
+    Description: Private subnet 1 ID
+  
+  PrivateSubnet2:
+    Type: String
+    Description: Private subnet 2 ID
+  
+  ApplicationSecurityGroup:
+    Type: String
+    Description: Application security group ID
+  
+  TargetGroupArn:
+    Type: String
+    Description: Target group ARN for load balancer
+  
+  ClusterName:
+    Type: String
+    Description: ECS cluster name
+  
+  ExecutionRoleArn:
+    Type: String
+    Description: ECS execution role ARN
+  
+  TaskRoleArn:
+    Type: String
+    Description: ECS task role ARN
+
+Resources:
+  TransferServiceTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub ${Environment}-transfer-service
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 1024
+      Memory: 2048
+      ExecutionRoleArn: !Ref ExecutionRoleArn
+      TaskRoleArn: !Ref TaskRoleArn
+      ContainerDefinitions:
+        - Name: transfer-service
+          Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/fintech-payments-transfer-service:${ImageTag}
+          Essential: true
+          PortMappings:
+            - ContainerPort: 8080
+              Protocol: tcp
+          Environment:
+            - Name: SPRING_PROFILES_ACTIVE
+              Value: aws
+            - Name: LEDGER_SERVICE_URL
+              Value: http://ledger-service.local:8081
+            - Name: SERVER_PORT
+              Value: "8080"
+            - Name: JAVA_OPTS
+              Value: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC"
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Sub /ecs/${Environment}-transfer-service
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+          HealthCheck:
+            Command:
+              - CMD-SHELL
+              - curl -f http://localhost:8080/actuator/health || exit 1
+            Interval: 30
+            Timeout: 5
+            Retries: 3
+            StartPeriod: 60
+          StopTimeout: 30
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-transfer-service-task
+
+  TransferService:
+    Type: AWS::ECS::Service
+    Properties:
+      ServiceName: !Sub ${Environment}-transfer-service
+      Cluster: !Ref ClusterName
+      TaskDefinition: !Ref TransferServiceTaskDefinition
+      DesiredCount: 2
+      LaunchType: FARGATE
+      PlatformVersion: LATEST
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          SecurityGroups:
+            - !Ref ApplicationSecurityGroup
+          Subnets:
+            - !Ref PrivateSubnet1
+            - !Ref PrivateSubnet2
+          AssignPublicIp: DISABLED
+      LoadBalancers:
+        - TargetGroupArn: !Ref TargetGroupArn
+          ContainerName: transfer-service
+          ContainerPort: 8080
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
+      HealthCheckGracePeriodSeconds: 60
+      EnableExecuteCommand: true
+      PropagateTags: SERVICE
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-transfer-service
+
+  # Auto Scaling
+  TransferServiceAutoScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      ServiceNamespace: ecs
+      ResourceId: !Sub service/${ClusterName}/${TransferService.Name}
+      ScalableDimension: ecs:service:DesiredCount
+      MinCapacity: 2
+      MaxCapacity: 10
+      RoleARN: !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService
+
+  TransferServiceAutoScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: !Sub ${Environment}-transfer-service-scaling-policy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref TransferServiceAutoScalingTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 70.0
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageCPUUtilization
+        ScaleOutCooldown: 300
+        ScaleInCooldown: 300
+
+Outputs:
+  ServiceName:
+    Description: Transfer Service name
+    Value: !Ref TransferService
+    Export:
+      Name: !Sub ${Environment}-transfer-service-name
+
+  TaskDefinitionArn:
+    Description: Transfer Service task definition ARN
+    Value: !Ref TransferServiceTaskDefinition
+    Export:
+      Name: !Sub ${Environment}-transfer-service-task-arn
