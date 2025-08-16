@@ -140,3 +140,11 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
+CODE_CLEANUP_SUMMARY.md
+fintech-payments-ledger-service/gradle/wrapper/gradle-wrapper.jar
+gradle/libs.versions.toml
+gradle/wrapper/gradle-wrapper.jar
+gradlew.bat
+MICROSERVICES_ARCHITECTURE_REFACTOR.md
+test-after-restart.sh
+test-transfer-debug.sh
