@@ -4,7 +4,6 @@ import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import za.co.titandynamix.client.LedgerTransferClient;
 import za.co.titandynamix.client.ResilientLedgerTransferClient;
@@ -76,9 +75,9 @@ class CircuitBreakerIntegrationTest {
         assertNotNull(result);
         assertEquals(TransferStatus.FAILED, result.getStatus());
         assertTrue(result.getFailureReason().contains("circuit breaker is OPEN"));
-        assertEquals(request.getFromAccountId(), result.getFromAccountId());
-        assertEquals(request.getToAccountId(), result.getToAccountId());
-        assertEquals(request.getAmount(), result.getAmount());
+        assertEquals(request.fromAccountId(), result.getFromAccountId());
+        assertEquals(request.toAccountId(), result.getToAccountId());
+        assertEquals(request.amount(), result.getAmount());
     }
 
     @Test

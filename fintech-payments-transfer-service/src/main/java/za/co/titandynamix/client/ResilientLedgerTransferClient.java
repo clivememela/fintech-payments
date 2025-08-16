@@ -46,9 +46,9 @@ public class ResilientLedgerTransferClient {
         
         log.info("ledger_service_call_attempt operation_id={} from_account={} to_account={} amount={} idempotency_key={}",
                 operationId,
-                request.getFromAccountId(),
-                request.getToAccountId(),
-                request.getAmount(),
+                request.fromAccountId(),
+                request.toAccountId(),
+                request.amount(),
                 idempotencyKey != null ? idempotencyKey : "none");
 
         Supplier<Transfer> transferSupplier = CircuitBreaker.decorateSupplier(
@@ -123,16 +123,16 @@ public class ResilientLedgerTransferClient {
      */
     private Transfer createFallbackTransfer(TransferRequest request, String reason) {
         log.warn("ledger_service_fallback_response from_account={} to_account={} amount={} reason={}",
-                request.getFromAccountId(),
-                request.getToAccountId(),
-                request.getAmount(),
+                request.fromAccountId(),
+                request.toAccountId(),
+                request.amount(),
                 reason);
         
         return Transfer.builder()
                 .id(UUID.randomUUID())
-                .fromAccountId(request.getFromAccountId())
-                .toAccountId(request.getToAccountId())
-                .amount(request.getAmount())
+                .fromAccountId(request.fromAccountId())
+                .toAccountId(request.toAccountId())
+                .amount(request.amount())
                 .status(TransferStatus.FAILED)
                 .failureReason(reason)
                 .createdAt(LocalDateTime.now())
