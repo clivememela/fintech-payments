@@ -148,3 +148,6 @@ gradlew.bat
 MICROSERVICES_ARCHITECTURE_REFACTOR.md
 test-after-restart.sh
 test-transfer-debug.sh
+!/.env
+!/.github/
+!/.github/
