@@ -212,21 +212,45 @@ jobs:
 
     - name: Set up Docker Compose
       run: |
-        docker-compose --version
+        # Check Docker Compose availability
+        if docker compose version >/dev/null 2>&1; then
+          echo "✅ Docker Compose plugin is available"
+          docker compose version
+          echo "COMPOSE_CMD=docker compose" >> $GITHUB_ENV
+        elif command -v docker-compose >/dev/null 2>&1; then
+          echo "✅ Docker Compose standalone is available"
+          docker-compose --version
+          echo "COMPOSE_CMD=docker-compose" >> $GITHUB_ENV
+        else
+          echo "❌ Docker Compose not found"
+          exit 1
+        fi
         
     - name: Run integration tests
       run: |
+        # Show docker-compose configuration
+        echo "=== Docker Compose Configuration ==="
+        cat docker-compose.yml
+        
         # Start services
-        docker-compose up -d postgres redis
+        $COMPOSE_CMD up -d postgres redis
         
         # Wait for services to be ready
         sleep 30
         
         # Start application services
-        docker-compose up -d ledger-service transfer-service
+        $COMPOSE_CMD up -d ledger-service transfer-service
         
         # Wait for applications to start
         sleep 60
+        
+        # Show container status
+        echo "=== Container Status ==="
+        docker ps -a
+        
+        # Show logs if containers failed
+        echo "=== Container Logs ==="
+        $COMPOSE_CMD logs --tail=50
         
         # Run health checks
         curl -f http://localhost:8081/actuator/health || exit 1
@@ -252,7 +276,7 @@ jobs:
 
     - name: Cleanup
       if: always()
-      run: docker-compose down -v
+      run: $COMPOSE_CMD down -v
 
   notify:
     name: Notify
