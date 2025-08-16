@@ -152,3 +152,7 @@ test-transfer-debug.sh
 !/.github/
 !/.github/
 !/gradle/
+!/gradle/wrapper/gradle-wrapper.properties
+!/gradle/wrapper/gradle-wrapper.jar
+!/gradle/wrapper/gradle-wrapper.properties
+!/gradle/libs.versions.toml
